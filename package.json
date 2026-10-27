@@ -1,0 +1,42 @@
+{
+  "name": "dsh-nia-memory",
+  "version": "0.4.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "通用角色记忆：人物、来源与跨会话延续",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "lib",
+    "client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "NOTICE.txt"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "slots"
+      ],
+      "external": [
+        "react"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node --test --test-isolation=none test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
