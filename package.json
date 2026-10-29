@@ -1,6 +1,6 @@
 {
   "name": "dsh-nia-memory",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "license": "MIT",
   "description": "通用角色记忆：人物、来源与跨会话延续",

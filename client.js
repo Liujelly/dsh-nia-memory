@@ -56,7 +56,7 @@ window.__ModuleLoader__.load({ id: 'dsh-nia-memory', factory: require=>{
     const refresh=async()=>{try{setData(await api('state'));setError('');}catch(e){setError(e.message);}};
     React.useEffect(()=>{void refresh();},[]);
     const act=async(fn,text)=>{setBusy(true);setError('');setNotice('');try{await fn();setData(await api('state'));setNotice(text);}catch(e){setError(e.message);}finally{setBusy(false);}};
-    if(!data)return root('memory',header('角色记忆','0.4.0'),message(error,true),empty('读取记忆中…'),h('button',{onClick:refresh},'重新读取'));
+    if(!data)return root('memory',header('角色记忆','0.4.1'),message(error,true),empty('读取记忆中…'),h('button',{onClick:refresh},'重新读取'));
     const name=id=>id==='self'?'角色自身':data.people.find(p=>p.id===id)?.alias||data.people.find(p=>p.id===id)?.name||id;
     const records=data.memories.filter(m=>(filter==='trash'?!!m.deletedAt:filter==='all'?true:!m.deletedAt&&!m.supersededBy)&&[m.text,...m.subjects.map(name)].join(' ').includes(query)).slice().reverse();
     const memories=h('div',null,card('记忆库',h('div',{className:'nia-row'},h('input',{'aria-label':'搜索记忆',placeholder:'搜索内容或人物…',value:query,onChange:e=>setQuery(e.target.value),style:{flex:'1 1 230px'}}),
@@ -117,7 +117,7 @@ window.__ModuleLoader__.load({ id: 'dsh-nia-memory', factory: require=>{
       h('button',{disabled:busy,onClick:()=>act(async()=>{const v=await api('export');const url=URL.createObjectURL(new Blob([JSON.stringify(v.data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='nia-memory-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);},'已生成备份下载')},'导出备份')),
       card('批次撤销',note('只撤销所选整理批次；已有后续修改时会拒绝覆盖。导入撤销隐藏摘要，原始来源保留。'),...(jobs.batches||data.maintenance?.batches||[]).slice().reverse().map(b=>h('div',{key:b.id,className:'nia-record'},h('span',null,(taskNames[b.type]||b.type)+' · '+b.count+' 条 · '+fmt(b.at)),h('button',{disabled:busy||b.undone,onClick:()=>act(async()=>{await api('undo',{batchId:b.id});setJobs(await api('tasks'));},'已撤销该批次')},b.undone?'已撤销':'撤销此批次')))),
       card('诊断数据',note('平时不需要查看。情绪状态可直接在“角色情绪”页查看。'),details('最近来源事件',data.events),details('最近发送结果',data.actions),details('情绪原始数据',data.moods)));
-    return root('memory',header('角色记忆',`0.4.0 · ${data.memories.filter(m=>!m.deletedAt&&!m.supersededBy).length} 条有效记忆 · ${data.people.length} 位已识别人物`,h('button',{disabled:busy,onClick:refresh},'刷新')),
+    return root('memory',header('角色记忆',`0.4.1 · ${data.memories.filter(m=>!m.deletedAt&&!m.supersededBy).length} 条有效记忆 · ${data.people.length} 位已识别人物`,h('button',{disabled:busy,onClick:refresh},'刷新')),
       tabs([['memories','记忆库'],['tools','导入与整理'],['recall','召回诊断'],['people','人物'],['bindings','会话接入'],['maintenance','管理与备份']],tab,setTab),message(error,true),message(notice),busy?message('正在保存…'):null,
       tab==='memories'?memories:tab==='tools'?toolsPage:tab==='recall'?recallPage:tab==='people'?people:tab==='bindings'?binding:maintenance);
   }
